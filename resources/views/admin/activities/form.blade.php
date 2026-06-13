@@ -118,6 +118,15 @@
                 </select>
             </div>
             <div>
+                <label class="block text-sm font-semibold mb-1">種別</label>
+                <select name="kind" class="w-full px-3 py-2 border border-stone-300 rounded-lg bg-white">
+                    @foreach (['event' => '活動・イベント', 'program' => '制度・支援', 'intro' => '相談・紹介'] as $k => $v)
+                        <option value="{{ $k }}" @selected(old('kind', $activity->kind ?? 'event') === $k)>{{ $v }}</option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-slate-400 mt-1">制度・相談は締切/期限切れの対象外（常設）になります。</p>
+            </div>
+            <div>
                 <label class="block text-sm font-semibold mb-1">公開状態</label>
                 <select name="status" class="w-full px-3 py-2 border border-stone-300 rounded-lg bg-white">
                     @foreach (\App\Models\Activity::STATUSES as $s)

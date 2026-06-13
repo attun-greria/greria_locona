@@ -42,6 +42,11 @@
     @endif
 
     <div class="flex flex-wrap items-center gap-2 mb-3">
+        @if ($activity->kind === 'program')
+            <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 text-sm font-medium">制度・支援</span>
+        @elseif ($activity->kind === 'intro')
+            <span class="px-3 py-1 rounded-full bg-rose-100 text-rose-700 text-sm font-medium">相談・紹介</span>
+        @endif
         @if ($activity->category)
             <span class="px-3 py-1 rounded-full bg-brand/10 text-brand text-sm font-medium">{{ $activity->category->name }}</span>
         @endif
@@ -93,11 +98,18 @@
         @endforeach
     </div>
 
-    {{-- 送客CTA（PUB-006） --}}
+    {{-- 送客CTA（PUB-006）。種別に応じて文言を変える。 --}}
+    @php
+        $ctaLabel = match ($activity->kind) {
+            'program' => '制度の詳細・申請方法を確認する →',
+            'intro' => '相談・問い合わせ窓口を確認する →',
+            default => '申込・詳細を一次情報で確認する →',
+        };
+    @endphp
     <div class="mt-8 flex flex-col sm:flex-row gap-3">
         <a href="{{ route('outbound.redirect', ['activity' => $activity, 'type' => 'apply']) }}" rel="nofollow"
            class="flex-1 text-center px-6 py-4 rounded-xl bg-accent hover:bg-accent-dark text-brand-dark font-bold transition">
-            申込・詳細を一次情報で確認する →
+            {{ $ctaLabel }}
         </a>
         @if ($activity->municipality->line_url)
             <a href="{{ $activity->municipality->line_url }}" rel="nofollow"

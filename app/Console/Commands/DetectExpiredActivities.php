@@ -22,6 +22,7 @@ class DetectExpiredActivities extends Command
         $today = now()->startOfDay();
 
         $expired = Activity::published()
+            ->where('kind', 'event') // 制度・相談は常設のため対象外
             ->where('is_recurring', false)
             ->where(function ($q) use ($today) {
                 $q->where('application_deadline', '<', $today)

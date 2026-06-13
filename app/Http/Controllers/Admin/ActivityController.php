@@ -159,6 +159,7 @@ class ActivityController extends Controller
         $data = $request->validate([
             'municipality_id' => ['required', 'exists:municipalities,id'],
             'category_id' => ['nullable', 'exists:activity_categories,id'],
+            'kind' => ['required', 'in:'.implode(',', Activity::KINDS)],
             'title' => ['required', 'string', 'max:255'],
             'summary' => ['required', 'string', 'max:1000'],
             'description' => ['nullable', 'string'],

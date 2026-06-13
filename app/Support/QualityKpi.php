@@ -23,6 +23,7 @@ class QualityKpi
             ->count();
 
         $expiredPublished = Activity::published()
+            ->where('kind', 'event')
             ->where('is_recurring', false)
             ->where(function ($q) use ($today) {
                 $q->where('application_deadline', '<', $today)->orWhere('end_at', '<', $today);

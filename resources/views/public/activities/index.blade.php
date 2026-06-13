@@ -24,6 +24,15 @@
                     </select>
                 </div>
                 <div>
+                    <label class="block font-semibold mb-1">種別</label>
+                    <select name="kind" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
+                        <option value="">すべて</option>
+                        @foreach (['event' => '活動・イベント', 'program' => '制度・支援', 'intro' => '相談・紹介'] as $k => $v)
+                            <option value="{{ $k }}" @selected(request('kind') === $k)>{{ $v }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div>
                     <label class="block font-semibold mb-1">カテゴリ</label>
                     <select name="category" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
                         <option value="">すべて</option>

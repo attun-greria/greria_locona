@@ -25,6 +25,7 @@ class DashboardController extends Controller
             'review' => Activity::where('status', 'review')->count()
                 + ExtractionRun::where('review_status', 'pending')->count(),
             'expired' => Activity::published()
+                ->where('kind', 'event')
                 ->where('is_recurring', false)
                 ->where(function ($q) use ($today) {
                     $q->where('application_deadline', '<', $today)

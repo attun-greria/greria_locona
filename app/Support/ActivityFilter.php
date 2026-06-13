@@ -43,6 +43,11 @@ class ActivityFilter
             $query->whereHas('category', fn (Builder $q) => $q->where('slug', $filters['category']));
         }
 
+        // 種別（活動・制度・相談）
+        if (! empty($filters['kind']) && in_array($filters['kind'], \App\Models\Activity::KINDS, true)) {
+            $query->where('kind', $filters['kind']);
+        }
+
         if (! empty($filters['from'])) {
             $query->where(function (Builder $q) use ($filters) {
                 $q->where('start_at', '>=', $filters['from'])->orWhere('application_deadline', '>=', $filters['from']);

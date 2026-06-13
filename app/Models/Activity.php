@@ -15,8 +15,11 @@ class Activity extends Model
 
     public const STATUSES = ['draft', 'review', 'published', 'archived', 'rejected'];
 
+    /** 掲載種別：活動・イベント / 制度・支援 / 相談・紹介 */
+    public const KINDS = ['event', 'program', 'intro'];
+
     protected $fillable = [
-        'municipality_id', 'category_id', 'title', 'slug', 'summary', 'description',
+        'municipality_id', 'category_id', 'kind', 'title', 'slug', 'summary', 'description',
         'source_url', 'apply_url', 'image_url', 'organizer_name',
         'application_deadline', 'start_at', 'end_at', 'is_recurring',
         'fee_text', 'child_friendly', 'beginner_friendly', 'online_available',
@@ -77,25 +80,30 @@ class Activity extends Model
 
     /**
      * 期限切れを除外（PUB-009）。
-     * 申込締切または開催終了日が過去のものは一覧から除外する。
+     * 制度・相談（program/intro）は常設のため対象外。活動（event）のみ締切・開催日で判定。
      */
     public function scopeNotExpired(Builder $query): Builder
     {
         $today = now()->startOfDay();
 
-        return $query->where(function (Builder $q) use ($today) {
-            $q->whereNull('application_deadline')->orWhere('application_deadline', '>=', $today);
-        })->where(function (Builder $q) use ($today) {
-            $q->whereNull('end_at')->orWhere('end_at', '>=', $today)->orWhere('is_recurring', true);
+        return $query->where(function (Builder $outer) use ($today) {
+            $outer->where('kind', '!=', 'event') // 制度・相談は常時有効
+                ->orWhere(function (Builder $q) use ($today) {
+                    $q->where(function (Builder $d) use ($today) {
+                        $d->whereNull('application_deadline')->orWhere('application_deadline', '>=', $today);
+                    })->where(function (Builder $e) use ($today) {
+                        $e->whereNull('end_at')->orWhere('end_at', '>=', $today)->orWhere('is_recurring', true);
+                    });
+                });
         });
     }
 
-    /** 期限切れ判定（PUB-009 / 表示用） */
+    /** 期限切れ判定（PUB-009 / 表示用）。制度・相談は期限切れにならない。 */
     public function isExpired(): bool
     {
         $today = now()->startOfDay();
 
-        if ($this->is_recurring) {
+        if ($this->kind !== 'event' || $this->is_recurring) {
             return false;
         }
         if ($this->application_deadline && $this->application_deadline->lt($today)) {
@@ -106,6 +114,15 @@ class Activity extends Model
         }
 
         return false;
+    }
+
+    public function kindLabel(): string
+    {
+        return match ($this->kind) {
+            'program' => '制度・支援',
+            'intro' => '相談・紹介',
+            default => '活動・イベント',
+        };
     }
 
     public function statusLabel(): string

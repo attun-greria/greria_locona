@@ -6,7 +6,12 @@
                  :image="$activity->image_url" :label="$activity->category?->name" />
     </div>
     <div class="p-4 flex-1">
-        <div class="flex items-center gap-2 text-xs">
+        <div class="flex flex-wrap items-center gap-1.5 text-xs">
+            @if ($activity->kind === 'program')
+                <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700 font-medium">制度・支援</span>
+            @elseif ($activity->kind === 'intro')
+                <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 font-medium">相談・紹介</span>
+            @endif
             @if ($activity->category)
                 <span class="px-2 py-0.5 rounded-full bg-brand/10 text-brand font-medium">{{ $activity->category->name }}</span>
             @endif
