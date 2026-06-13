@@ -1,9 +1,64 @@
 @import 'tailwindcss';
 
+/* テンプレート走査対象（Blade全体＋ページネーション＋コンパイル済みビュー） */
+@source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/* LOCONA デザイントークン（ブランド：ティール＋グリーンのドット） */
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --color-brand: #2c6e6a;
+    --color-brand-dark: #234e4b;
+    --color-brand-light: #3e8b86;
+    --color-accent: #9ccc4f;
+    --color-accent-dark: #6fa72c;
+
+    /* 日本語優先のフォントスタック（Webフォント非依存で確実に表示） */
+    --font-sans: 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', 'Noto Sans JP', 'Yu Gothic',
+        'Meiryo', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+}
+
+/* ベース：日本語の可読性・アクセシビリティ（NFR-010） */
+@layer base {
+    html {
+        -webkit-text-size-adjust: 100%;
+    }
+    body {
+        font-feature-settings: 'palt';
+        line-height: 1.7;
+    }
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible,
+    summary:focus-visible {
+        outline: 2px solid var(--color-brand);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+}
+
+/* 再利用コンポーネント（デザイン統一）。v4では@applyにカスタムクラス不可のため各定義は独立。 */
+@layer components {
+    .lo-card {
+        @apply bg-white border border-stone-200 rounded-2xl shadow-sm;
+    }
+    .lo-card-link {
+        @apply bg-white border border-stone-200 rounded-2xl shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-brand/40;
+    }
+    .lo-btn-primary {
+        @apply inline-flex items-center justify-center font-bold rounded-xl transition bg-brand text-white hover:bg-brand-dark;
+    }
+    .lo-btn-accent {
+        @apply inline-flex items-center justify-center font-bold rounded-xl transition bg-accent text-brand-dark hover:bg-accent-dark hover:text-white;
+    }
+    /* セクション見出し：ブランドのグリーンのドットをアクセントに */
+    .lo-section-title {
+        @apply flex items-center gap-2 text-xl font-bold text-brand-dark;
+    }
+    .lo-section-title::before {
+        content: '';
+        @apply inline-block w-2.5 h-2.5 rounded-full bg-accent;
+    }
 }

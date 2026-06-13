@@ -1,6 +1,6 @@
 {{-- 活動カード（一覧・トップ共通） --}}
 <a href="{{ route('activities.show', $activity) }}"
-   class="flex flex-col bg-white border border-stone-200 rounded-xl overflow-hidden hover:shadow-md hover:border-brand transition">
+   class="lo-card-link flex flex-col overflow-hidden">
     <div class="p-4 flex-1">
         <div class="flex items-center gap-2 text-xs">
             @if ($activity->category)

@@ -12,16 +12,8 @@
     <meta property="og:title" content="@yield('title', 'LOCONA')">
     <meta property="og:description" content="@yield('meta_description', '地域への「よりみち」を見つけ、つながりを育てる。')">
     <meta property="og:type" content="website">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('head')
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: { extend: { colors: {
-                brand: { DEFAULT: '#2C6E6A', dark: '#234E4B', light: '#3E8B86' },
-                accent: { DEFAULT: '#9CCC4F', dark: '#7BB534' },
-            } } }
-        }
-    </script>
 </head>
 <body class="bg-stone-50 text-slate-800 antialiased flex flex-col min-h-screen">
     <header class="bg-white border-b border-stone-200 sticky top-0 z-30">

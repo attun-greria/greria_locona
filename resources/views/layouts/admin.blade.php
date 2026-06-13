@@ -5,13 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
     <title>@yield('title', '管理画面')｜LOCONA</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = { theme: { extend: { colors: {
-            brand: { DEFAULT: '#2C6E6A', dark: '#234E4B', light: '#3E8B86' },
-            accent: { DEFAULT: '#9CCC4F', dark: '#7BB534' },
-        } } } }
-    </script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-stone-100 text-slate-800 antialiased">
 <div class="flex min-h-screen">
