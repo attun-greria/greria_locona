@@ -93,6 +93,32 @@ class ActivityController extends Controller
         return redirect()->route('admin.activities.edit', $copy)->with('status', '活動を複製しました。');
     }
 
+    /** 一括操作（ADM-011）: 公開・非公開・アーカイブ・再確認日更新 */
+    public function bulk(Request $request)
+    {
+        $validated = $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:activities,id'],
+            'bulk_action' => ['required', 'in:publish,unpublish,archive,verify'],
+        ]);
+
+        $activities = Activity::whereIn('id', $validated['ids'])->get();
+        foreach ($activities as $activity) {
+            match ($validated['bulk_action']) {
+                'publish' => $activity->forceFill([
+                    'status' => 'published',
+                    'verified_at' => $activity->verified_at ?? now(),
+                ])->save(),
+                'unpublish' => $activity->update(['status' => 'draft']),
+                'archive' => $activity->update(['status' => 'archived']),
+                'verify' => $activity->update(['verified_at' => now()]),
+            };
+        }
+        Audit::log('bulk_'.$validated['bulk_action'], null, ['ids' => $validated['ids']]);
+
+        return back()->with('status', count($validated['ids']).'件に一括操作を実行しました。');
+    }
+
     /** 公開ステータス変更（ADM-005） */
     public function changeStatus(Request $request, Activity $activity)
     {

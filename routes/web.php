@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\ActivityController as AdminActivityController;
 use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\Admin\Auth\LoginController;
+use App\Http\Controllers\Admin\CsvController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ExtractionReviewController;
@@ -56,8 +57,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // 活動
         Route::resource('activities', AdminActivityController::class)->except('show');
+        Route::post('activities/bulk', [AdminActivityController::class, 'bulk'])->name('activities.bulk');
         Route::post('activities/{activity}/duplicate', [AdminActivityController::class, 'duplicate'])->name('activities.duplicate');
         Route::patch('activities/{activity}/status', [AdminActivityController::class, 'changeStatus'])->name('activities.status');
+
+        // CSV入出力（ADM-012）
+        Route::get('csv/activities', [CsvController::class, 'exportActivities'])->name('csv.activities');
+        Route::get('csv/municipalities', [CsvController::class, 'exportMunicipalities'])->name('csv.municipalities');
+        Route::get('csv/import', [CsvController::class, 'importForm'])->name('csv.import');
+        Route::post('csv/import/municipalities', [CsvController::class, 'importMunicipalities'])->name('csv.import.municipalities');
 
         // カテゴリ・タグ
         Route::get('categories', [CategoryController::class, 'index'])->name('categories.index');
