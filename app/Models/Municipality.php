@@ -11,8 +11,8 @@ class Municipality extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name', 'slug', 'prefecture', 'city', 'summary',
-        'official_url', 'related_urls', 'line_url',
+        'name', 'slug', 'catchphrase', 'prefecture', 'city', 'summary',
+        'official_url', 'image_url', 'related_urls', 'line_url',
         'contact_name', 'contact_url', 'is_published',
     ];
 

@@ -64,10 +64,12 @@ class MunicipalityController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'catchphrase' => ['nullable', 'string', 'max:255'],
             'prefecture' => ['required', 'string', 'max:16'],
             'city' => ['nullable', 'string', 'max:64'],
             'summary' => ['nullable', 'string'],
             'official_url' => ['nullable', 'url', 'max:255'],
+            'image_url' => ['nullable', 'url', 'max:1024'],
             'line_url' => ['nullable', 'url', 'max:255'],
             'contact_name' => ['nullable', 'string', 'max:255'],
             'contact_url' => ['nullable', 'url', 'max:255'],

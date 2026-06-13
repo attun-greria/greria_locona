@@ -24,10 +24,10 @@ class SampleContentSeeder extends Seeder
         $searchTags = Tag::where('type', 'search')->pluck('id')->all();
 
         $samples = [
-            ['長野県飯山市', '長野県', '飯山市', '雪と里山に恵まれた北信州のまち。農山村体験や二地域居住の受け入れに力を入れています。'],
-            ['島根県海士町', '島根県', '海士町', '隠岐諸島の離島。半農半X、教育魅力化、Iターン受け入れで知られる地域です。'],
-            ['徳島県神山町', '徳島県', '神山町', 'サテライトオフィスやアートで関係人口づくりを進める山あいのまち。'],
-            ['北海道下川町', '北海道', '下川町', '森林資源を活かしたSDGsのまちづくり。林業・移住体験を実施。'],
+            ['長野県飯山市', '長野県', '飯山市', '雪と里山に恵まれた北信州のまち。農山村体験や二地域居住の受け入れに力を入れています。', '雪と里山、よりみちの北信州'],
+            ['島根県海士町', '島根県', '海士町', '隠岐諸島の離島。半農半X、教育魅力化、Iターン受け入れで知られる地域です。', 'ないものはない、半農半Xの島'],
+            ['徳島県神山町', '徳島県', '神山町', 'サテライトオフィスやアートで関係人口づくりを進める山あいのまち。', '創造的過疎、アートと働くまち'],
+            ['北海道下川町', '北海道', '下川町', '森林資源を活かしたSDGsのまちづくり。林業・移住体験を実施。', '森と生きる、SDGsのまち'],
         ];
 
         $activityTemplates = [
@@ -38,11 +38,12 @@ class SampleContentSeeder extends Seeder
             ['親子で楽しむ秋の収穫祭', '文化・祭り', '地域の収穫祭。農産物の直売や郷土食づくり体験を実施。', true, true, false],
         ];
 
-        foreach ($samples as $mi => [$name, $pref, $city, $summary]) {
+        foreach ($samples as $mi => [$name, $pref, $city, $summary, $catchphrase]) {
             $municipality = Municipality::updateOrCreate(
                 ['slug' => Str::slug($name) ?: 'm-'.$mi],
                 [
                     'name' => $name, 'prefecture' => $pref, 'city' => $city, 'summary' => $summary,
+                    'catchphrase' => $catchphrase,
                     'official_url' => 'https://example.com/'.$city,
                     'related_urls' => ['https://example.com/'.$city.'/kanko', 'https://example.com/'.$city.'/iju'],
                     'line_url' => 'https://line.me/R/ti/p/@'.$city,

@@ -31,6 +31,12 @@
         <span class="text-slate-700">{{ \Illuminate\Support\Str::limit($activity->title, 24) }}</span>
     </nav>
 
+    {{-- ヒーローカバー --}}
+    <div class="h-48 md:h-60 mb-6">
+        <x-cover :seed="$activity->slug" :icon="$activity->category?->icon ?: '📍'"
+                 :image="$activity->image_url" rounded="rounded-2xl" />
+    </div>
+
     @if ($activity->isExpired())
         <div class="mb-4 px-4 py-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-sm">この活動は募集・開催を終了している可能性があります。最新情報は一次情報でご確認ください。</div>
     @endif

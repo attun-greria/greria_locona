@@ -24,8 +24,16 @@
             <input type="text" name="city" value="{{ old('city', $municipality->city) }}" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
         </div>
         <div>
+            <label class="block text-sm font-semibold mb-1">キャッチコピー（紹介の一言）</label>
+            <input type="text" name="catchphrase" value="{{ old('catchphrase', $municipality->catchphrase) }}" placeholder="例：雪と里山、半農半Xのまち" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
+        </div>
+        <div>
             <label class="block text-sm font-semibold mb-1">概要</label>
             <textarea name="summary" rows="3" class="w-full px-3 py-2 border border-stone-300 rounded-lg">{{ old('summary', $municipality->summary) }}</textarea>
+        </div>
+        <div>
+            <label class="block text-sm font-semibold mb-1">画像URL（任意・権利を確認した画像のみ）</label>
+            <input type="url" name="image_url" value="{{ old('image_url', $municipality->image_url) }}" placeholder="未設定なら自動カバーを表示" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
         </div>
         <div class="grid sm:grid-cols-2 gap-4">
             <div>

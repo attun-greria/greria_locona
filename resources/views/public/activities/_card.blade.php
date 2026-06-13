@@ -1,6 +1,10 @@
 {{-- 活動カード（一覧・トップ共通） --}}
 <a href="{{ route('activities.show', $activity) }}"
    class="lo-card-link flex flex-col overflow-hidden">
+    <div class="h-32 shrink-0">
+        <x-cover :seed="$activity->slug" :icon="$activity->category?->icon ?: '📍'"
+                 :image="$activity->image_url" :label="$activity->category?->name" />
+    </div>
     <div class="p-4 flex-1">
         <div class="flex items-center gap-2 text-xs">
             @if ($activity->category)

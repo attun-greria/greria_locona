@@ -17,7 +17,7 @@ class Activity extends Model
 
     protected $fillable = [
         'municipality_id', 'category_id', 'title', 'slug', 'summary', 'description',
-        'source_url', 'apply_url', 'organizer_name',
+        'source_url', 'apply_url', 'image_url', 'organizer_name',
         'application_deadline', 'start_at', 'end_at', 'is_recurring',
         'fee_text', 'child_friendly', 'beginner_friendly', 'online_available',
         'has_reward', 'transport_support', 'lodging_support', 'target_audience', 'capacity',

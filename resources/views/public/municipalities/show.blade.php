@@ -5,10 +5,17 @@
 @section('canonical', route('municipalities.show', $municipality))
 
 @section('content')
-<div class="bg-gradient-to-br from-brand to-brand-light text-white">
-    <div class="max-w-5xl mx-auto px-4 py-12">
-        <div class="text-sm text-stone-100">{{ $municipality->prefecture }}</div>
-        <h1 class="mt-1 text-3xl font-bold">{{ $municipality->name }}</h1>
+<div class="relative overflow-hidden bg-gradient-to-br from-brand-dark via-brand to-brand-light text-white">
+    @if ($municipality->image_url)
+        <img src="{{ $municipality->image_url }}" alt="" class="absolute inset-0 w-full h-full object-cover opacity-30">
+    @endif
+    <div class="pointer-events-none absolute -right-16 -top-16 w-72 h-72 rounded-full bg-accent/20 blur-2xl"></div>
+    <div class="relative max-w-5xl mx-auto px-4 py-14">
+        <div class="text-sm text-accent font-medium">{{ $municipality->prefecture }}</div>
+        <h1 class="mt-1 text-3xl md:text-4xl font-bold">{{ $municipality->name }}</h1>
+        @if ($municipality->catchphrase)
+            <p class="mt-2 text-lg text-white/90 font-medium">{{ $municipality->catchphrase }}</p>
+        @endif
         @if ($municipality->summary)
             <p class="mt-4 max-w-2xl text-stone-100 leading-relaxed">{{ $municipality->summary }}</p>
         @endif

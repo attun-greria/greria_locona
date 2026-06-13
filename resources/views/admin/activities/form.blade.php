@@ -38,6 +38,10 @@
                 <label class="block text-sm font-semibold mb-1">主催者（任意）</label>
                 <input type="text" name="organizer_name" value="{{ old('organizer_name', $activity->organizer_name) }}" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
             </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">画像URL（任意・権利を確認した画像のみ）</label>
+                <input type="url" name="image_url" value="{{ old('image_url', $activity->image_url) }}" placeholder="未設定ならカテゴリ連動の自動カバーを表示" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
+            </div>
         </div>
 
         {{-- 日程 --}}

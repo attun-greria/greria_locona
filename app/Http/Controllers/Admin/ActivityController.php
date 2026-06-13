@@ -164,6 +164,7 @@ class ActivityController extends Controller
             'description' => ['nullable', 'string'],
             'source_url' => ['required', 'url', 'max:1024'],
             'apply_url' => ['nullable', 'url', 'max:1024'],
+            'image_url' => ['nullable', 'url', 'max:1024'],
             'organizer_name' => ['nullable', 'string', 'max:255'],
             'application_deadline' => ['nullable', 'date'],
             'start_at' => ['nullable', 'date'],
