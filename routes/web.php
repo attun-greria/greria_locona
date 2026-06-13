@@ -17,6 +17,7 @@ use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MunicipalityController;
 use App\Http\Controllers\Public\OutboundController;
 use App\Http\Controllers\Public\SeoController;
+use App\Http\Controllers\Webhook\LineWebhookController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -37,6 +38,9 @@ Route::get('/go/{activity}', [OutboundController::class, 'redirect'])->name('out
 
 Route::get('/municipalities', [MunicipalityController::class, 'index'])->name('municipalities.index');
 Route::get('/municipalities/{municipality}', [MunicipalityController::class, 'show'])->name('municipalities.show');
+
+// LINE Webhook受信（LIN-003）。署名検証で保護、CSRF除外（bootstrap/app.php）。
+Route::post('/webhooks/line/{channel}', [LineWebhookController::class, 'handle'])->name('webhooks.line');
 
 /*
 |--------------------------------------------------------------------------

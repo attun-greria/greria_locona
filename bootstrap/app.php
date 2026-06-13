@@ -16,6 +16,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin.access' => \App\Http\Middleware\EnsureAdminAccess::class,
         ]);
+        // LINE Webhookは署名検証で保護するためCSRF対象外とする（LIN-003）
+        $middleware->validateCsrfTokens(except: [
+            'webhooks/*',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
