@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\FetchSourceJob;
 use App\Models\Municipality;
 use App\Models\Source;
 use App\Support\Audit;
@@ -68,6 +69,35 @@ class SourceController extends Controller
         $source->delete();
 
         return redirect()->route('admin.sources.index')->with('status', '収集元URLを削除しました。');
+    }
+
+    /** 手動再取得（CRW-014）。取得は同期実行し結果をその場で記録する。 */
+    public function recrawl(Source $source)
+    {
+        if (! $source->robots_checked || ! $source->terms_checked) {
+            return back()->withErrors(['url' => '利用規約・robots.txt の確認が未完了のため取得できません（CRW-005）。']);
+        }
+
+        if (config('locona.crawl.fetcher') === 'null') {
+            return back()->withErrors(['url' => '取得が無効（LOCONA_FETCHER=null）です。規約確認のうえ http を有効化してください。']);
+        }
+
+        FetchSourceJob::dispatchSync($source);
+        Audit::log('manual_recrawl', $source);
+
+        return back()->with('status', '再取得を実行しました。取得履歴を確認してください。');
+    }
+
+    /** 取得履歴（CRW-002 可視化）。 */
+    public function history(Source $source)
+    {
+        $source->load('municipality');
+        $runs = $source->crawlRuns()
+            ->withCount('extractionRuns')
+            ->latest('fetched_at')
+            ->paginate(30);
+
+        return view('admin.sources.history', compact('source', 'runs'));
     }
 
     private function validateData(Request $request): array

@@ -39,7 +39,10 @@
                             <span class="{{ $s->robots_checked ? 'text-accent-dark' : 'text-slate-300' }}">robots</span>
                         </td>
                         <td class="px-4 py-3 text-slate-400">{{ optional($s->last_crawled_at)->format('y/n/j') ?? '未取得' }}</td>
-                        <td class="px-4 py-3 text-right"><a href="{{ route('admin.sources.edit', $s) }}" class="text-brand hover:underline">編集</a></td>
+                        <td class="px-4 py-3 text-right whitespace-nowrap">
+                            <a href="{{ route('admin.sources.history', $s) }}" class="text-brand hover:underline">履歴</a>
+                            <a href="{{ route('admin.sources.edit', $s) }}" class="ml-2 text-brand hover:underline">編集</a>
+                        </td>
                     </tr>
                 @empty
                     <tr><td colspan="7" class="px-4 py-10 text-center text-slate-400">収集元URLがありません。</td></tr>

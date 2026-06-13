@@ -54,6 +54,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         Route::resource('municipalities', AdminMunicipalityController::class)->except('show');
         Route::resource('sources', SourceController::class)->except('show');
+        Route::post('sources/{source}/recrawl', [SourceController::class, 'recrawl'])->name('sources.recrawl');
+        Route::get('sources/{source}/history', [SourceController::class, 'history'])->name('sources.history');
 
         // 活動
         Route::resource('activities', AdminActivityController::class)->except('show');
