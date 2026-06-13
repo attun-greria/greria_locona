@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use App\Models\ActivityCategory;
 use App\Models\Municipality;
+use App\Support\ActivityFilter;
 use Illuminate\Http\Request;
 
 /**
@@ -22,58 +23,8 @@ class ActivityController extends Controller
         $query = Activity::published()->notExpired()
             ->with(['municipality', 'category']);
 
-        // キーワード（活動名・要約・主催者）
-        if ($keyword = trim((string) $request->input('q', ''))) {
-            $query->where(function ($q) use ($keyword) {
-                $q->where('title', 'like', "%{$keyword}%")
-                    ->orWhere('summary', 'like', "%{$keyword}%")
-                    ->orWhere('organizer_name', 'like', "%{$keyword}%");
-            });
-        }
-
-        // 地域
-        if ($pref = $request->input('prefecture')) {
-            $query->whereHas('municipality', fn ($q) => $q->where('prefecture', $pref));
-        }
-        if ($city = $request->input('city')) {
-            $query->whereHas('municipality', fn ($q) => $q->where('city', $city));
-        }
-
-        // カテゴリ
-        if ($category = $request->input('category')) {
-            $query->whereHas('category', fn ($q) => $q->where('slug', $category));
-        }
-
-        // 開催時期（締切または開催開始が指定範囲内）
-        if ($from = $request->date('from')) {
-            $query->where(function ($q) use ($from) {
-                $q->where('start_at', '>=', $from)->orWhere('application_deadline', '>=', $from);
-            });
-        }
-        if ($to = $request->date('to')) {
-            $query->where(function ($q) use ($to) {
-                $q->where('start_at', '<=', $to)->orWhere('application_deadline', '<=', $to);
-            });
-        }
-
-        // 参加条件（PUB-004）
-        foreach (['child_friendly', 'beginner_friendly', 'online_available', 'has_reward', 'transport_support', 'lodging_support'] as $flag) {
-            if ($request->boolean($flag)) {
-                $query->where($flag, true);
-            }
-        }
-        if ($request->input('recurrence') === 'recurring') {
-            $query->where('is_recurring', true);
-        } elseif ($request->input('recurrence') === 'single') {
-            $query->where('is_recurring', false);
-        }
-
-        // 並び替え
-        match ($request->input('sort')) {
-            'deadline' => $query->orderByRaw('application_deadline is null, application_deadline asc'),
-            'popular' => $query->orderByDesc('click_count'),
-            default => $query->latest('verified_at'),
-        };
+        // 検索の絞り込みは共通サービスへ委譲（PUB-003/004）
+        ActivityFilter::apply($query, $request->all());
 
         $activities = $query->paginate(12)->withQueryString();
 
