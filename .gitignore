@@ -28,3 +28,6 @@ Thumbs.db
 
 # ローカル開発用sqlite
 /database/database.sqlite
+
+# Xserverデプロイ用の接続情報
+/deploy/xserver/deploy.env
