@@ -35,6 +35,9 @@ Route::get('/activities', [ActivityController::class, 'index'])->name('activitie
 Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
 // 一次情報への送客＋クリック計測（PUB-006）
 Route::get('/go/{activity}', [OutboundController::class, 'redirect'])->name('outbound.redirect');
+// 修正・削除依頼の受付（ADM-014 / SEC-012）。連投防止のためスロットリング。
+Route::post('/activities/{activity}/correction-request', [\App\Http\Controllers\Public\CorrectionRequestController::class, 'store'])
+    ->middleware('throttle:6,1')->name('activities.correction');
 
 Route::get('/municipalities', [MunicipalityController::class, 'index'])->name('municipalities.index');
 Route::get('/municipalities/{municipality}', [MunicipalityController::class, 'show'])->name('municipalities.show');
@@ -90,6 +93,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('extractions/{extraction}/review', [ExtractionReviewController::class, 'review'])->name('extractions.review');
         Route::get('review', [ReviewQueueController::class, 'index'])->name('review.index');
         Route::get('duplicates', [DuplicateController::class, 'index'])->name('duplicates.index');
+
+        // 修正・削除依頼管理（ADM-014）
+        Route::get('corrections', [\App\Http\Controllers\Admin\CorrectionRequestController::class, 'index'])->name('corrections.index');
+        Route::patch('corrections/{correction}', [\App\Http\Controllers\Admin\CorrectionRequestController::class, 'update'])->name('corrections.update');
 
         // 監査ログ（admin のみ）
         Route::get('audit-logs', [AuditLogController::class, 'index'])

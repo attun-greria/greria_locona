@@ -3,13 +3,14 @@
 @section('title', 'ダッシュボード')
 
 @section('content')
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
         @php
             $cards = [
                 ['公開中の活動', $stats['published'], 'text-brand', route('admin.activities.index', ['status' => 'published'])],
                 ['確認待ち', $stats['review'], 'text-amber-600', route('admin.activities.index', ['status' => 'review'])],
                 ['期限切れ候補', $stats['expired'], 'text-orange-600', route('admin.review.index')],
                 ['取得失敗', $stats['crawl_failed'], 'text-red-600', route('admin.review.index')],
+                ['修正・削除依頼', $stats['corrections'], 'text-rose-600', route('admin.corrections.index')],
                 ['送客クリック累計', $stats['clicks'], 'text-slate-700', null],
             ];
         @endphp

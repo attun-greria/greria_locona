@@ -105,6 +105,37 @@
         <a href="{{ route('outbound.redirect', $activity) }}" rel="nofollow" class="underline hover:text-brand">{{ parse_url($activity->source_url, PHP_URL_HOST) }}</a>
     </p>
 
+    {{-- 修正・削除依頼（ADM-014 / SEC-012） --}}
+    <section class="mt-12 border-t border-stone-200 pt-6">
+        @if (session('correction_sent'))
+            <div class="mb-3 px-4 py-3 rounded-lg bg-accent/15 border border-accent text-accent-dark text-sm">{{ session('correction_sent') }}</div>
+        @endif
+        <details class="text-sm" @if($errors->any()) open @endif>
+            <summary class="cursor-pointer text-slate-500 hover:text-brand">この情報の誤り・修正・掲載削除を依頼する</summary>
+            <form method="post" action="{{ route('activities.correction', $activity) }}" class="mt-4 bg-white border border-stone-200 rounded-xl p-5 space-y-3 max-w-xl">
+                @csrf
+                @error('message')<p class="text-red-600">{{ $message }}</p>@enderror
+                <div>
+                    <label class="block font-semibold mb-1">依頼の種類</label>
+                    <select name="type" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
+                        <option value="correction">情報の修正</option>
+                        <option value="deletion">掲載の削除</option>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">内容 <span class="text-red-500">*</span></label>
+                    <textarea name="message" rows="3" required class="w-full px-3 py-2 border border-stone-300 rounded-lg" placeholder="誤りの箇所や修正内容をご記入ください">{{ old('message') }}</textarea>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-3">
+                    <input type="text" name="requester_name" value="{{ old('requester_name') }}" placeholder="お名前・団体名（任意）" class="px-3 py-2 border border-stone-300 rounded-lg">
+                    <input type="email" name="requester_email" value="{{ old('requester_email') }}" placeholder="返信先メール（任意）" class="px-3 py-2 border border-stone-300 rounded-lg">
+                </div>
+                <button class="px-5 py-2 rounded-lg bg-brand text-white font-bold">送信する</button>
+            </form>
+        </details>
+    </section>
+
     {{-- 関連活動（PUB-008） --}}
     @if ($related->isNotEmpty())
         <section class="mt-12">

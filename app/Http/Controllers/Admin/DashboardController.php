@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
+use App\Models\CorrectionRequest;
 use App\Models\CrawlRun;
 use App\Models\ExtractionRun;
 use App\Models\OutboundClick;
@@ -30,6 +31,7 @@ class DashboardController extends Controller
                 })->count(),
             'crawl_failed' => CrawlRun::where('result', 'failed')->count(),
             'clicks' => OutboundClick::count(),
+            'corrections' => CorrectionRequest::whereIn('status', ['open', 'in_progress'])->count(),
         ];
 
         $recentReview = Activity::where('status', 'review')

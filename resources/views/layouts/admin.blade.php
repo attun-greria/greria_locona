@@ -30,6 +30,7 @@
                 ['admin.extractions.index', '抽出レビュー', '🤖'],
                 ['admin.review.index', '期限切れ・失敗', '⏰'],
                 ['admin.duplicates.index', '重複候補', '👯'],
+                ['admin.corrections.index', '修正・削除依頼', '✉️'],
                 ['admin.categories.index', 'カテゴリ', '🏷'],
                 ['admin.tags.index', 'タグ', '#️⃣'],
             ];
