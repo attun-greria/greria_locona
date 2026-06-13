@@ -14,6 +14,7 @@ use App\Http\Controllers\Public\ActivityController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\MunicipalityController;
 use App\Http\Controllers\Public\OutboundController;
+use App\Http\Controllers\Public\SeoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,10 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// SEO（NFR-011）
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 
 Route::get('/activities', [ActivityController::class, 'index'])->name('activities.index');
 Route::get('/activities/{activity}', [ActivityController::class, 'show'])->name('activities.show');
