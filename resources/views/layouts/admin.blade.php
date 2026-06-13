@@ -29,6 +29,7 @@
                 ['admin.sources.index', '収集元URL', '🔗'],
                 ['admin.extractions.index', '抽出レビュー', '🤖'],
                 ['admin.review.index', '期限切れ・失敗', '⏰'],
+                ['admin.duplicates.index', '重複候補', '👯'],
                 ['admin.categories.index', 'カテゴリ', '🏷'],
                 ['admin.tags.index', 'タグ', '#️⃣'],
             ];

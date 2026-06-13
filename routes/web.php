@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\CsvController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DuplicateController;
 use App\Http\Controllers\Admin\ExtractionReviewController;
 use App\Http\Controllers\Admin\MunicipalityController as AdminMunicipalityController;
 use App\Http\Controllers\Admin\ReviewQueueController;
@@ -84,6 +85,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('extractions/{extraction}', [ExtractionReviewController::class, 'show'])->name('extractions.show');
         Route::post('extractions/{extraction}/review', [ExtractionReviewController::class, 'review'])->name('extractions.review');
         Route::get('review', [ReviewQueueController::class, 'index'])->name('review.index');
+        Route::get('duplicates', [DuplicateController::class, 'index'])->name('duplicates.index');
 
         // 監査ログ（admin のみ）
         Route::get('audit-logs', [AuditLogController::class, 'index'])
