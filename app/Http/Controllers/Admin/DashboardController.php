@@ -8,6 +8,7 @@ use App\Models\CorrectionRequest;
 use App\Models\CrawlRun;
 use App\Models\ExtractionRun;
 use App\Models\OutboundClick;
+use App\Support\QualityKpi;
 
 /**
  * ダッシュボード（ADM-013 / ADM-02）。
@@ -38,7 +39,8 @@ class DashboardController extends Controller
             ->with('municipality')->latest('updated_at')->take(8)->get();
 
         $clicks30d = OutboundClick::where('clicked_at', '>=', now()->subDays(30))->count();
+        $kpi = (new QualityKpi())->summary();
 
-        return view('admin.dashboard', compact('stats', 'recentReview', 'clicks30d'));
+        return view('admin.dashboard', compact('stats', 'recentReview', 'clicks30d', 'kpi'));
     }
 }
