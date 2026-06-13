@@ -61,14 +61,27 @@ php artisan serve
 - 期限切れ・取得失敗の確認（ADM-010）
 - 監査ログ（admin限定）（ADM-015 / SEC-007）
 
-### 公開情報収集・AI抽出（CRW / バッチ）
-- 収集元URL・取得履歴・AI抽出履歴のデータ構造（CRW-001/002/008/010）
-- `php artisan locona:crawl`：取得対象抽出＋ジョブ投入のスケルトン（JOB-001）
-- `php artisan locona:detect-expired`：期限切れ検知（JOB-004）
-- スケジュール登録は `routes/console.php`
+### 公開情報収集・AI抽出ワークフロー（CRW / バッチ）
+キュー駆動のパイプライン（設計：`docs/crawling-workflow.md`）。
+- `locona:crawl`（JOB-001）→ **FetchSourceJob**（取得・SHA256差分検知・スナップショット保存）
+  → 変更時のみ **ExtractActivityJob**（AI抽出・信頼度）→ `pending` → 人手確認（ADM-008）
+- Fetcher（`null`/`http`）・Extractor（`heuristic`/`llm`）は `config/locona.php` で**差し替え可能**（CRW-008）
+- 既定は安全側（実取得・外部送信なし）。`HeuristicExtractor` はJSON-LD/meta/日付/費用/条件をローカル解析
+- 取得は規約・robots確認をゲート（CRW-004/005）。管理画面に取得履歴・手動再取得（CRW-002/014）
+- 抽出の「採用」で活動ドラフトを自動生成（5-1 公開判定への橋渡し）
+- `locona:detect-expired`（JOB-004）、スケジュールは `routes/console.php`
 
-> クローリング本体は、対象サイトごとの利用規約・robots.txt・アクセス頻度の確認（CRW-004/005）を
-> 前提に `App\Jobs\*` として実装します。本文・画像の転載は避け、事実情報と一次情報送客を基本とします。
+### その他の機能
+- **公開API**（11-1）：`GET /api/activities`, `/api/activities/{id}`, `/api/municipalities`, `/{id}`
+- **SEO**（NFR-011）：`/sitemap.xml`・`/robots.txt` 動的生成
+- **一括操作・CSV入出力**（ADM-011/012）：公開制御の一括実行、自治体/活動CSV、自治体CSVインポート
+- **重複候補検出**（ADM-009/CRW-011）：同一URL・類似タイトル・同一開催日
+- **LINE Webhook受信**（LIN-003）：`POST /webhooks/line/{channel}`、HMAC-SHA256署名検証
+- **修正・削除依頼**（ADM-014/SEC-012）：活動詳細から受付、運用側で対応管理
+- **情報品質KPI**（14-1）：30日以内確認率・期限切れ残存率などをダッシュボード表示
+
+> クローリングの実取得を伴う運用開始は、対象サイトごとの利用規約・robots.txt・アクセス頻度の確認
+> （CRW-004/005、法務レビュー論点）の完了が前提です。本文・画像の転載は避け、事実情報と一次情報送客を基本とします。
 
 ## データモデル（付録B）
 
