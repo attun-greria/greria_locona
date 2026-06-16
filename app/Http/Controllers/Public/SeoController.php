@@ -29,7 +29,7 @@ class SeoController extends Controller
             ];
         });
 
-        Activity::published()->notExpired()->get()->each(function ($a) use (&$urls) {
+        Activity::public()->notExpired()->get()->each(function ($a) use (&$urls) {
             $urls[] = [
                 'loc' => route('activities.show', $a),
                 'lastmod' => ($a->verified_at ?? $a->updated_at)?->toAtomString(),

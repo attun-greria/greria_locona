@@ -46,6 +46,34 @@
                 <input type="number" name="priority" min="1" max="5" value="{{ old('priority', $source->priority ?? 3) }}" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
             </div>
         </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-semibold mb-1">ライセンス層</label>
+                <select name="license_tier" class="w-full px-3 py-2 border border-stone-300 rounded-lg bg-white">
+                    @foreach (['open' => '公式・オープンデータ', 'semi_public' => '観光協会・移住ポータル等', 'restricted' => '民間・SNS'] as $k => $v)
+                        <option value="{{ $k }}" @selected(old('license_tier', $source->license_tier ?? 'semi_public') === $k)>{{ $v }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">公開ポリシー</label>
+                <select name="publication_policy" class="w-full px-3 py-2 border border-stone-300 rounded-lg bg-white">
+                    @foreach (['publishable' => '公開可（事実＋編集＋出典）', 'link_only' => 'リンク送客のみ', 'internal_only' => '社内診断のみ（非公開）'] as $k => $v)
+                        <option value="{{ $k }}" @selected(old('publication_policy', $source->publication_policy ?? 'link_only') === $k)>{{ $v }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-semibold mb-1">出典の表示名</label>
+                <input type="text" name="attribution_name" value="{{ old('attribution_name', $source->attribution_name) }}" placeholder="例：飯山市公式サイト" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">規約・ライセンスURL</label>
+                <input type="url" name="license_url" value="{{ old('license_url', $source->license_url) }}" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
+            </div>
+        </div>
         <div>
             <label class="block text-sm font-semibold mb-1">利用規約確認メモ（CRW-005）</label>
             <textarea name="terms_note" rows="3" class="w-full px-3 py-2 border border-stone-300 rounded-lg">{{ old('terms_note', $source->terms_note) }}</textarea>

@@ -16,20 +16,20 @@ class QualityKpi
     public function summary(): array
     {
         $today = now()->startOfDay();
-        $publishedCount = Activity::published()->count();
+        $publishedCount = Activity::public()->count();
 
-        $verified30 = Activity::published()
+        $verified30 = Activity::public()
             ->where('verified_at', '>=', now()->subDays(30))
             ->count();
 
-        $expiredPublished = Activity::published()
+        $expiredPublished = Activity::public()
             ->where('kind', 'event')
             ->where('is_recurring', false)
             ->where(function ($q) use ($today) {
                 $q->where('application_deadline', '<', $today)->orWhere('end_at', '<', $today);
             })->count();
 
-        $activeCount = Activity::published()->notExpired()->count();
+        $activeCount = Activity::public()->notExpired()->count();
 
         return [
             'published' => $publishedCount,

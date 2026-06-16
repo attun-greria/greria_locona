@@ -20,7 +20,8 @@ class Activity extends Model
 
     protected $fillable = [
         'municipality_id', 'category_id', 'kind', 'title', 'slug', 'summary', 'description',
-        'source_url', 'apply_url', 'image_url', 'organizer_name',
+        'quote_text', 'quote_source', 'visibility',
+        'source_url', 'attribution_name', 'cited_at', 'apply_url', 'image_url', 'organizer_name',
         'application_deadline', 'start_at', 'end_at', 'is_recurring',
         'fee_text', 'child_friendly', 'beginner_friendly', 'online_available',
         'has_reward', 'transport_support', 'lodging_support', 'target_audience', 'capacity',
@@ -29,6 +30,7 @@ class Activity extends Model
 
     protected $casts = [
         'application_deadline' => 'date',
+        'cited_at' => 'date',
         'start_at' => 'datetime',
         'end_at' => 'datetime',
         'verified_at' => 'datetime',
@@ -72,10 +74,16 @@ class Activity extends Model
         return 'slug';
     }
 
-    /** 公開中のみ（ADM-005 / PUB-002） */
+    /** 公開ステータス（ADM-005）。社内のみ(internal)も含む。管理・集計用。 */
     public function scopePublished(Builder $query): Builder
     {
         return $query->where('status', 'published');
+    }
+
+    /** 公開メディアに掲載される活動（公開ステータス かつ visibility=public）。利用者向け・KPI用。 */
+    public function scopePublic(Builder $query): Builder
+    {
+        return $query->where('status', 'published')->where('visibility', 'public');
     }
 
     /**

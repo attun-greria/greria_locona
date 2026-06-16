@@ -60,7 +60,12 @@
                         <td class="px-4 py-3 font-medium max-w-xs truncate">{{ $a->title }}</td>
                         <td class="px-4 py-3 text-slate-500">{{ $a->municipality->name }}</td>
                         <td class="px-4 py-3 text-slate-500">{{ $a->category?->name ?? '—' }}</td>
-                        <td class="px-4 py-3"><span class="px-2 py-0.5 rounded-full text-xs {{ $badge }}">{{ $a->statusLabel() }}</span></td>
+                        <td class="px-4 py-3">
+                            <span class="px-2 py-0.5 rounded-full text-xs {{ $badge }}">{{ $a->statusLabel() }}</span>
+                            @if ($a->visibility === 'internal')
+                                <span class="block mt-1 text-xs px-1.5 py-0.5 rounded bg-amber-100 text-amber-700 w-fit">社内のみ</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-slate-500">{{ optional($a->application_deadline)->format('y/n/j') ?? '—' }}</td>
                         <td class="px-4 py-3 text-slate-500">{{ $a->click_count }}</td>
                         <td class="px-4 py-3 text-right whitespace-nowrap">

@@ -17,10 +17,10 @@ class HomeController extends Controller
     {
         $categories = ActivityCategory::where('is_active', true)
             ->orderBy('display_order')
-            ->withCount(['activities' => fn ($q) => $q->published()->notExpired()])
+            ->withCount(['activities' => fn ($q) => $q->public()->notExpired()])
             ->get();
 
-        $base = Activity::published()->notExpired()->with(['municipality', 'category']);
+        $base = Activity::public()->notExpired()->with(['municipality', 'category']);
 
         $featured = (clone $base)->orderByDesc('click_count')->take(6)->get();
         $latest = (clone $base)->latest('verified_at')->take(8)->get();
@@ -34,7 +34,7 @@ class HomeController extends Controller
 
         // 注目の自治体（紹介コンテンツ）
         $municipalities = Municipality::where('is_published', true)
-            ->withCount(['activities' => fn ($q) => $q->published()->notExpired()])
+            ->withCount(['activities' => fn ($q) => $q->public()->notExpired()])
             ->orderByDesc('activities_count')
             ->take(6)
             ->get();
@@ -45,7 +45,7 @@ class HomeController extends Controller
 
         // ポータルの実績ストリップ
         $stats = [
-            'activities' => Activity::published()->notExpired()->count(),
+            'activities' => Activity::public()->notExpired()->count(),
             'municipalities' => Municipality::where('is_published', true)->count(),
             'categories' => $categories->count(),
         ];

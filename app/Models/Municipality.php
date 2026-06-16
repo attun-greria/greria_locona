@@ -28,7 +28,7 @@ class Municipality extends Model
 
     public function publishedActivities(): HasMany
     {
-        return $this->activities()->where('status', 'published');
+        return $this->activities()->where('status', 'published')->where('visibility', 'public');
     }
 
     public function sources(): HasMany

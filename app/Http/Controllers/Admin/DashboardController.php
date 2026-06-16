@@ -21,10 +21,10 @@ class DashboardController extends Controller
         $today = now()->startOfDay();
 
         $stats = [
-            'published' => Activity::published()->count(),
+            'published' => Activity::public()->count(),
             'review' => Activity::where('status', 'review')->count()
                 + ExtractionRun::where('review_status', 'pending')->count(),
-            'expired' => Activity::published()
+            'expired' => Activity::public()
                 ->where('kind', 'event')
                 ->where('is_recurring', false)
                 ->where(function ($q) use ($today) {

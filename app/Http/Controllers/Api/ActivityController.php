@@ -16,7 +16,7 @@ class ActivityController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Activity::published()->notExpired()->with(['municipality', 'category']);
+        $query = Activity::public()->notExpired()->with(['municipality', 'category']);
         ActivityFilter::apply($query, $request->all());
 
         return ActivityResource::collection($query->paginate(20)->withQueryString());
@@ -24,7 +24,7 @@ class ActivityController extends Controller
 
     public function show(Activity $activity)
     {
-        abort_unless($activity->status === 'published', 404);
+        abort_unless($activity->status === 'published' && $activity->visibility === 'public', 404);
 
         return new ActivityResource($activity->load(['municipality', 'category']));
     }

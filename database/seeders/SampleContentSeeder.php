@@ -56,10 +56,27 @@ class SampleContentSeeder extends Seeder
                 ['url' => 'https://example.com/'.$city.'/events'],
                 [
                     'municipality_id' => $municipality->id, 'page_type' => 'official',
+                    'license_tier' => 'open', 'publication_policy' => 'publishable',
+                    'attribution_name' => $name.'公式サイト',
+                    'license_url' => 'https://www.digital.go.jp/resources/open_data/public_data_license_v1.0',
                     'crawl_frequency' => 'weekly', 'priority' => 2, 'is_active' => true,
                     'robots_checked' => true, 'terms_checked' => true,
-                    'terms_note' => '公開イベント・制度情報のみ構造化。本文・画像の転載なし、一次情報へ送客。',
+                    'terms_note' => '政府標準利用規約準拠（出典明示で利用可）。本文・画像の転載なし、一次情報へ送客。',
                     'last_crawled_at' => now()->subDays(3),
+                ]
+            );
+
+            // 民間・SNS由来は社内診断のみ（非公開）の例
+            $restricted = Source::updateOrCreate(
+                ['url' => 'https://example.com/'.$city.'/private-events'],
+                [
+                    'municipality_id' => $municipality->id, 'page_type' => 'sns',
+                    'license_tier' => 'restricted', 'publication_policy' => 'internal_only',
+                    'attribution_name' => '民間イベント情報（参考）',
+                    'crawl_frequency' => 'manual', 'priority' => 4, 'is_active' => true,
+                    'robots_checked' => true, 'terms_checked' => true,
+                    'terms_note' => '規約上の転載不可。診断・社内インデックス用途のみ（公開しない）。',
+                    'last_crawled_at' => now()->subDays(5),
                 ]
             );
 
@@ -75,6 +92,14 @@ class SampleContentSeeder extends Seeder
             foreach ($this->intros($name) as $idx => $item) {
                 $this->createActivity($municipality, $source, "in-{$mi}-{$idx}", $item);
             }
+
+            // 4) 社内診断のみ（民間由来・非公開）の例。公開サイトには表示されない。
+            $this->createActivity($municipality, $restricted, "di-{$mi}", [
+                'kind' => 'event', 'category' => '観光・体験',
+                'title' => '民間主催 まちなかマルシェ（参考）',
+                'summary' => '民間イベントサイトで告知されている地域イベント。規約上の転載不可のため社内診断用の参考データとして保持。',
+                'description' => "公開はせず、自治体の発信状況の診断・営業材料として活用します（送客や編集記事化は許諾取得後に検討）。",
+            ]);
 
             $this->seedCrawlDemo($municipality, $source);
         }
@@ -94,7 +119,7 @@ class SampleContentSeeder extends Seeder
     {
         return [
             '飯山市' => [
-                ['category' => '農業・食', 'title' => '棚田オーナーになって米づくり', 'summary' => '北信州の棚田で、田植えから稲刈りまで一年を通して米づくりを体験。収穫したお米はオーナー特典としてお届けします。', 'description' => "地元農家が一年を通してサポート。春の田植え、夏の草取り、秋の稲刈りと、季節ごとに棚田に通って米づくりを体験できます。\n収穫した新米（約20kg）はオーナー特典としてご自宅へお届け。週末開催・初心者歓迎、家族での参加も大歓迎です。", 'fee_text' => '1区画 年間30,000円（収穫米約20kg付）', 'child' => true, 'beginner' => true],
+                ['category' => '農業・食', 'title' => '棚田オーナーになって米づくり', 'summary' => '北信州の棚田で、田植えから稲刈りまで一年を通して米づくりを体験。収穫したお米はオーナー特典としてお届けします。', 'description' => "地元農家が一年を通してサポート。春の田植え、夏の草取り、秋の稲刈りと、季節ごとに棚田に通って米づくりを体験できます。\n収穫した新米（約20kg）はオーナー特典としてご自宅へお届け。週末開催・初心者歓迎、家族での参加も大歓迎です。", 'fee_text' => '1区画 年間30,000円（収穫米約20kg付）', 'child' => true, 'beginner' => true, 'quote' => '棚田オーナー制度では、田植え・稲刈り等の農作業体験を通じて、棚田の保全と地域との交流を図ります。', 'quote_source' => '飯山市公式サイト「棚田オーナー制度のご案内」'],
                 ['category' => '自然・アウトドア', 'title' => 'ブナ林スノーシューハイク', 'summary' => '雪に包まれた鍋倉高原のブナ林を、ガイドと一緒にスノーシューで歩く半日ツアー。', 'description' => "豪雪地ならではの真っ白なブナ原生林を、専門ガイドの案内でのんびり散策。動物の足跡や冬芽を観察しながら、雪上ランチも楽しめます。スノーシュー・ストックはレンタル込み。", 'fee_text' => '3,500円（スノーシューレンタル・保険込）', 'beginner' => true],
                 ['category' => '空き家・二地域居住', 'title' => '古民家ゲストハウスで二地域居住お試し滞在', 'summary' => '改修した古民家に滞在し、平日はリモートワーク、週末は地域活動という二地域居住をお試しできます。', 'description' => "築90年の古民家を改修したゲストハウスに最大2週間滞在。高速Wi-Fi完備でワーケーションが可能です。地域住民との交流会や空き家バンク物件の見学もアレンジします。", 'fee_text' => '1泊2,000円（光熱費・Wi-Fi込）', 'lodging' => true],
                 ['category' => '子育て・教育', 'title' => '親子で雪国の暮らし自然体験', 'summary' => 'かまくらづくりや雪遊び、地元食材の郷土食づくりを親子で楽しむ日帰りプログラム。', 'description' => "雪国の知恵を遊びながら学ぶ親子向け体験。午前はかまくらづくりと雪遊び、午後はおやき・笹寿司などの郷土食づくり。未就学児から参加できます。", 'fee_text' => '無料（材料費は当日500円）', 'child' => true, 'beginner' => true],
@@ -146,9 +171,11 @@ class SampleContentSeeder extends Seeder
             'kind' => 'event', 'category' => '観光・体験', 'description' => null, 'fee_text' => null,
             'child' => false, 'beginner' => false, 'online' => false, 'reward' => false,
             'transport' => false, 'lodging' => false, 'recurring' => false, 'capacity' => null,
+            'visibility' => null, 'quote' => null, 'quote_source' => null,
         ];
         $d = array_merge($defaults, $item);
         $isEvent = $d['kind'] === 'event';
+        $visibility = $d['visibility'] ?? $source->defaultVisibility();
 
         $fullTitle = "{$d['title']}（{$municipality->city}）";
         $hash = abs(crc32($seed));
@@ -174,6 +201,11 @@ class SampleContentSeeder extends Seeder
                 'summary' => $d['summary'],
                 'description' => $d['description'],
                 'source_url' => $source->url.'/'.$seed,
+                'attribution_name' => $source->attribution_name ?: $municipality->name.'公式サイト',
+                'cited_at' => now()->subDays($hash % 20)->toDateString(),
+                'visibility' => $visibility,
+                'quote_text' => $d['quote'],
+                'quote_source' => $d['quote_source'],
                 'apply_url' => $source->url.'/'.$seed.'/apply',
                 'organizer_name' => $municipality->name.'（'.($isEvent ? '地域づくり課' : '移住定住推進室').'）',
                 'application_deadline' => $deadline,

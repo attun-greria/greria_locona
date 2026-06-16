@@ -15,7 +15,7 @@ class OutboundController extends Controller
 {
     public function redirect(Request $request, Activity $activity)
     {
-        abort_unless($activity->status === 'published', 404);
+        abort_unless($activity->status === 'published' && $activity->visibility === 'public', 404);
 
         $type = $request->input('type') === 'apply' ? 'apply' : 'source';
         $target = $type === 'apply' ? ($activity->apply_url ?: $activity->source_url) : $activity->source_url;

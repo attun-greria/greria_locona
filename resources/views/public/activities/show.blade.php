@@ -60,6 +60,16 @@
         <div class="mt-4 text-slate-700 leading-relaxed whitespace-pre-line">{{ $activity->description }}</div>
     @endif
 
+    {{-- 引用ブロック（明瞭区別・出所明示／著作権法32条） --}}
+    @if ($activity->quote_text)
+        <figure class="mt-5">
+            <blockquote class="border-l-4 border-brand bg-stone-50 rounded-r-lg px-4 py-3 text-slate-700 leading-relaxed">{{ $activity->quote_text }}</blockquote>
+            @if ($activity->quote_source)
+                <figcaption class="mt-1 text-xs text-slate-500">出典：{{ $activity->quote_source }}</figcaption>
+            @endif
+        </figure>
+    @endif
+
     {{-- 共通項目テーブル（PUB-005） --}}
     <dl class="mt-8 grid sm:grid-cols-2 gap-x-8 gap-y-3 bg-white border border-stone-200 rounded-xl p-6 text-sm">
         @php
@@ -118,10 +128,13 @@
             </a>
         @endif
     </div>
-    <p class="mt-2 text-xs text-slate-400">
-        最終確認日：{{ optional($activity->verified_at)->format('Y年n月j日') ?? '未確認' }}　/　情報元：
-        <a href="{{ route('outbound.redirect', $activity) }}" rel="nofollow" class="underline hover:text-brand">{{ parse_url($activity->source_url, PHP_URL_HOST) }}</a>
-    </p>
+    {{-- 出所明示（48条）。公開情報を整理した編集情報である旨と出典を明記。 --}}
+    <div class="mt-3 text-xs text-slate-500 bg-stone-50 border border-stone-200 rounded-lg px-3 py-2">
+        本ページは公開情報をもとにLOCONA編集部が整理した情報です。詳細・最新情報は一次情報をご確認ください。<br>
+        出典：<a href="{{ route('outbound.redirect', $activity) }}" rel="nofollow" class="underline hover:text-brand">{{ $activity->attribution_name ?: parse_url($activity->source_url, PHP_URL_HOST) }}</a>
+        @if ($activity->cited_at)　（取得日：{{ $activity->cited_at->format('Y年n月j日') }}）@endif
+        　/　最終確認日：{{ optional($activity->verified_at)->format('Y年n月j日') ?? '未確認' }}
+    </div>
 
     {{-- 修正・削除依頼（ADM-014 / SEC-012） --}}
     <section class="mt-12 border-t border-stone-200 pt-6">

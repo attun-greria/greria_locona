@@ -32,7 +32,11 @@
                     <tr class="border-b border-stone-50 hover:bg-stone-50">
                         <td class="px-4 py-3 max-w-xs truncate"><a href="{{ $s->url }}" target="_blank" rel="nofollow" class="text-brand hover:underline">{{ $s->url }}</a></td>
                         <td class="px-4 py-3 text-slate-500">{{ $s->municipality?->name ?? '—' }}</td>
-                        <td class="px-4 py-3 text-slate-500">{{ $s->page_type }}</td>
+                        <td class="px-4 py-3 text-slate-500">
+                            {{ $s->page_type }}
+                            @php $pc = ['publishable'=>'bg-accent/20 text-accent-dark','link_only'=>'bg-stone-100 text-slate-600','internal_only'=>'bg-amber-100 text-amber-700'][$s->publication_policy] ?? 'bg-stone-100'; @endphp
+                            <span class="block mt-1 text-xs px-1.5 py-0.5 rounded {{ $pc }} w-fit">{{ $s->publicationPolicyLabel() }}</span>
+                        </td>
                         <td class="px-4 py-3 text-slate-500">{{ $s->crawl_frequency }}</td>
                         <td class="px-4 py-3">
                             <span class="{{ $s->terms_checked ? 'text-accent-dark' : 'text-slate-300' }}">規約</span>

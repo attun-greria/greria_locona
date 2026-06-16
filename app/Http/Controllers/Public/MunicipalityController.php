@@ -14,7 +14,7 @@ class MunicipalityController extends Controller
     public function index()
     {
         $municipalities = Municipality::where('is_published', true)
-            ->withCount(['activities' => fn ($q) => $q->published()->notExpired()])
+            ->withCount(['activities' => fn ($q) => $q->public()->notExpired()])
             ->orderBy('prefecture')->orderBy('name')
             ->paginate(24);
 
@@ -26,7 +26,7 @@ class MunicipalityController extends Controller
         abort_unless($municipality->is_published, 404);
 
         $activities = $municipality->activities()
-            ->published()->notExpired()
+            ->public()->notExpired()
             ->with('category')
             ->latest('verified_at')
             ->paginate(12);

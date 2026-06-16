@@ -42,6 +42,24 @@
                 <label class="block text-sm font-semibold mb-1">画像URL（任意・権利を確認した画像のみ）</label>
                 <input type="url" name="image_url" value="{{ old('image_url', $activity->image_url) }}" placeholder="未設定ならカテゴリ連動の自動カバーを表示" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
             </div>
+            <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-semibold mb-1">出典名（出所明示）</label>
+                    <input type="text" name="attribution_name" value="{{ old('attribution_name', $activity->attribution_name) }}" placeholder="例：飯山市公式サイト" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
+                </div>
+                <div>
+                    <label class="block text-sm font-semibold mb-1">出典の取得・確認日</label>
+                    <input type="date" name="cited_at" value="{{ old('cited_at', optional($activity->cited_at)->format('Y-m-d')) }}" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
+                </div>
+            </div>
+        </div>
+
+        {{-- 引用ブロック（著作権法32条：明瞭区別・出所明示） --}}
+        <div class="bg-white rounded-xl border border-stone-200 p-5 space-y-4">
+            <h2 class="font-bold text-slate-700 text-sm">引用（任意）</h2>
+            <p class="text-xs text-slate-400">原文を引用する場合は最小限とし、必ず出所を明記してください（自社編集が主・引用が従）。</p>
+            <textarea name="quote_text" rows="3" placeholder="引用テキスト" class="w-full px-3 py-2 border border-stone-300 rounded-lg">{{ old('quote_text', $activity->quote_text) }}</textarea>
+            <input type="text" name="quote_source" value="{{ old('quote_source', $activity->quote_source) }}" placeholder="引用の出所（例：飯山市公式サイト「イベント情報」）" class="w-full px-3 py-2 border border-stone-300 rounded-lg">
         </div>
 
         {{-- 日程 --}}
@@ -133,6 +151,14 @@
                         <option value="{{ $s }}" @selected(old('status', $activity->status)===$s)>{{ $s }}</option>
                     @endforeach
                 </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold mb-1">可視性</label>
+                <select name="visibility" class="w-full px-3 py-2 border border-stone-300 rounded-lg bg-white">
+                    <option value="public" @selected(old('visibility', $activity->visibility ?? 'public')==='public')>公開（メディア掲載）</option>
+                    <option value="internal" @selected(old('visibility', $activity->visibility ?? 'public')==='internal')>社内のみ（診断・非公開）</option>
+                </select>
+                <p class="text-xs text-slate-400 mt-1">社内のみは公開サイトに表示されません。</p>
             </div>
             <div>
                 <label class="block text-sm font-semibold mb-1">最終確認日</label>

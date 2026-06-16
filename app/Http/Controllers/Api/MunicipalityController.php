@@ -14,7 +14,7 @@ class MunicipalityController extends Controller
     public function index()
     {
         $municipalities = Municipality::where('is_published', true)
-            ->withCount(['activities' => fn ($q) => $q->published()->notExpired()])
+            ->withCount(['activities' => fn ($q) => $q->public()->notExpired()])
             ->orderBy('prefecture')->orderBy('name')
             ->paginate(50);
 
@@ -24,7 +24,7 @@ class MunicipalityController extends Controller
     public function show(Municipality $municipality)
     {
         abort_unless($municipality->is_published, 404);
-        $municipality->loadCount(['activities' => fn ($q) => $q->published()->notExpired()]);
+        $municipality->loadCount(['activities' => fn ($q) => $q->public()->notExpired()]);
 
         return new MunicipalityResource($municipality);
     }

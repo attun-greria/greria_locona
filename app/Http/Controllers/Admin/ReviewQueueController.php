@@ -16,7 +16,7 @@ class ReviewQueueController extends Controller
         $today = now()->startOfDay();
 
         // 期限切れだが公開中の活動（情報品質KPI: 期限切れ残存率）
-        $expired = Activity::published()
+        $expired = Activity::public()
             ->where('kind', 'event')
             ->where('is_recurring', false)
             ->where(function ($q) use ($today) {

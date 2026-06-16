@@ -33,6 +33,10 @@ class ActivityDraftFactory
             'title' => $title,
             'summary' => $data['summary'] ?? Str::limit(strip_tags((string) ($extraction->source_text ?? '')), 200),
             'source_url' => $data['source_url'] ?? $source->url,
+            // 収集元の公開ポリシーを引き継ぐ（internal_only は社内のみ）
+            'visibility' => $source->defaultVisibility(),
+            'attribution_name' => $source->attribution_name ?: $source->municipality?->name,
+            'cited_at' => optional($extraction->crawlRun?->fetched_at)->toDateString() ?? now()->toDateString(),
             'application_deadline' => $this->date($data['application_deadline'] ?? null),
             'start_at' => $this->dateTime($data['start_at'] ?? null),
             'end_at' => $this->dateTime($data['end_at'] ?? null),

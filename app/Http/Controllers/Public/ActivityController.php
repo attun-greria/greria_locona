@@ -20,7 +20,7 @@ class ActivityController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Activity::published()->notExpired()
+        $query = Activity::public()->notExpired()
             ->with(['municipality', 'category']);
 
         // 検索の絞り込みは共通サービスへ委譲（PUB-003/004）
@@ -40,12 +40,13 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
-        abort_unless($activity->status === 'published', 404);
+        // 社内のみ(internal)は公開ページに出さない
+        abort_unless($activity->status === 'published' && $activity->visibility === 'public', 404);
 
         $activity->load(['municipality', 'category', 'tags']);
 
         // 関連活動（PUB-008）: 同カテゴリ・同自治体を優先
-        $related = Activity::published()->notExpired()
+        $related = Activity::public()->notExpired()
             ->where('id', '!=', $activity->id)
             ->where(function ($q) use ($activity) {
                 $q->where('category_id', $activity->category_id)
